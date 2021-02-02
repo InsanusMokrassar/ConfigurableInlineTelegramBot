@@ -13,8 +13,10 @@ function assert_success() {
     fi
 }
 
-app=planner-text-help
+app=configurable_inline_telegram_bot
 version=0.1
+
+export DOCKER_BUILD=true
 
 assert_success ./gradlew build
 assert_success docker build -t $app:"$version" .

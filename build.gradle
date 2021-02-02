@@ -21,7 +21,9 @@ mainClassName="dev.inmo.configurable_inline_telegram_bot.StartBotKt"
 
 apply from: "publish.gradle"
 
-project.version = "$library_version"
+if (System.getenv("DOCKER_BUILD") != "true") {
+    project.version = "$library_version"
+}
 project.group = "$library_group"
 
 repositories {
