@@ -1,0 +1,47 @@
+project.group = "com.insanusmokrassar"
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply plugin: 'kotlinx-serialization'
+
+mainClassName="dev.inmo.configurable_inline_telegram_bot.StartBotKt"
+
+apply from: "publish.gradle"
+
+project.version = "$library_version"
+project.group = "$library_group"
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    
+    implementation "dev.inmo:tgbotapi:$telegram_bot_api_version"
+
+    api "io.ktor:ktor-client-core:$ktor_version"
+    api "io.ktor:ktor-client-okhttp:$ktor_version"
+
+    api "io.ktor:ktor-server-core:$ktor_version"
+    api "io.ktor:ktor-server-tomcat:$ktor_version"
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
