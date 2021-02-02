@@ -18,8 +18,9 @@ app=configurable_inline_telegram_bot
 version=0.1
 
 export DOCKER_BUILD=true
-
 assert_success ./gradlew build
+export DOCKER_BUILD=false
+
 assert_success docker build -t $app:"$version" .
 assert_success docker tag $app:"$version" $user/$app:$version
 assert_success docker tag $app:"$version" $user/$app:latest
