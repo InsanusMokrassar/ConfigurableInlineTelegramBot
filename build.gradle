@@ -45,5 +45,5 @@ dependencies {
     api "io.ktor:ktor-server-tomcat:$ktor_version"
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
 }
