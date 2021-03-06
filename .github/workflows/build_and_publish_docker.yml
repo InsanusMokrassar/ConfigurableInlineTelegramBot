@@ -16,8 +16,6 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: |
-            insanusmokrassar/configurable_inline_telegram_bot
           tag-sha: true
           tag-latest: false
       - name: Push to Docker Hub
