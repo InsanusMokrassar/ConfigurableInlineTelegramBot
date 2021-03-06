@@ -1,0 +1,15 @@
+{
+  "botToken": "bot token from @BotFather",
+  "apiUrl": "(optional) can be used if you are using your bot server",
+  "clientConfig": {
+    "proxy": {
+      "host": "localhost",
+      "port": 1080,
+      "username": "optional",
+      "password": "optional"
+    },
+    "connectTimeout": "(optional) number, milliseconds",
+    "writeTimeout": "(optional) number, milliseconds",
+    "readTimeout": "(optional) number, milliseconds"
+  }
+}
