@@ -17,7 +17,7 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Publish
-        run: ./gradlew --no-parallel publishAllPublicationsToGithubPackagesRepository -x signJvmPublication -x signKotlinMultiplatformPublication -x signMetadataPublication -x signAndroidDebugPublication -x signAndroidReleasePublication -x signKotlinMultiplatformPublication
+        run: ./gradlew --no-parallel publishAllPublicationsToGithubPackagesRepository
         env:
           GITHUBPACKAGES_USER: ${{ github.actor }}
           GITHUBPACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
