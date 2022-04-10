@@ -1,15 +1,38 @@
 {
-  "botToken": "bot token from @BotFather",
-  "apiUrl": "(optional) can be used if you are using your bot server",
-  "clientConfig": {
-    "proxy": {
-      "host": "localhost",
-      "port": 1080,
-      "username": "optional",
-      "password": "optional"
-    },
-    "connectTimeout": "(optional) number, milliseconds",
-    "writeTimeout": "(optional) number, milliseconds",
-    "readTimeout": "(optional) number, milliseconds"
+  "botConfig": {
+    "botToken": "bot token from @BotFather",
+    "apiUrl": "(optional) can be used if you are using your bot server",
+    "clientConfig": {
+      "proxy": {
+        "host": "localhost",
+        "port": 1080,
+        "username": "optional",
+        "password": "optional"
+      },
+      "connectTimeout": "(optional) number, milliseconds",
+      "writeTimeout": "(optional) number, milliseconds",
+      "readTimeout": "(optional) number, milliseconds"
+    }
+  },
+  "templates": [
+    {
+      "title": "Some example",
+      "formats": [
+        {
+          "template": "Some message which will be sent after clicking on option and opportunity to use format options from java with splitting of incoming query by splitBy option",
+          "regexTemplate": "Some regex, by default it is ^$ which means empty string",
+          "splitBy": "Optional splitter, by default is null but the most regular case is to use \" \" to split query by spaces",
+          "enableMarkdownSupport": false,
+          "enableMarkdownSupport_description": "THAT IS NOT A FIELD. enableMarkdownSupport is a flat to use markdown 2 markup with template"
+        }
+      ],
+      "description": "It is optional description of some example format"
+    }
+  ],
+  "restrictions": {
+    "allowedUsers": [
+
+    ],
+    "description": "THAT IS NOT A FIELD. allowedUsers is an optional field which contains list of users which may use this bot to call its inline queries"
   }
 }

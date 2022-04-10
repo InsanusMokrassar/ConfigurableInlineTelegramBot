@@ -1,61 +1,72 @@
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
-task javadocsJar(type: Jar) {
+task javadocJar(type: Jar) {
+    from javadoc
     classifier = 'javadoc'
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
 
 publishing {
-    publications.all {
-        artifact javadocsJar
+    publications {
+        maven(MavenPublication) {
+            from components.java
 
-        pom {
-            description = "This library is fully ready to launch bot for working with presets of inline answers in Telegram via Bot API"
-            name = "${project.name}"
-            url = "https://insanusmokrassar.github.io/${project.name}"
+            artifact javadocJar
+            artifact sourcesJar
 
-            scm {
-                developerConnection = "scm:git:[fetch=]https://github.com/InsanusMokrassar/${project.name}[push=]https://github.com/InsanusMokrassar/${project.name}"
-                url = "https://github.com/InsanusMokrassar/${project.name}"
-            }
+            pom {
+                resolveStrategy = Closure.DELEGATE_FIRST
 
-            developers {
-                
-                    developer {
-                        id = "InsanusMokrassar"
-                        name = "Ovsiannikov Aleksei"
-                        email = "ovsyannikov.alexey95@gmail.com"
-                    }
-                
-            }
+                description = "This library is fully ready to launch bot for working with presets of inline answers in Telegram via Bot API"
+                name = "${project.name}"
+                url = "https://insanusmokrassar.github.io/${project.name}"
 
-            licenses {
-                
-                    license {
-                        name = "Apache Software License 2.0"
-                        url = "https://opensource.org/licenses/Apache-2.0"
-                    }
-                
-            }
-        }
-        repositories {
-            if ((project.hasProperty('GITHUBPACKAGES_USER') || System.getenv('GITHUBPACKAGES_USER') != null) && (project.hasProperty('GITHUBPACKAGES_PASSWORD') || System.getenv('GITHUBPACKAGES_PASSWORD') != null)) {
-                maven {
-                    name = "GithubPackages"
-                    url = uri("https://maven.pkg.github.com/InsanusMokrassar/ConfigurableInlineTelegramBot")
-                    credentials {
-                        username = project.hasProperty('GITHUBPACKAGES_USER') ? project.property('GITHUBPACKAGES_USER') : System.getenv('GITHUBPACKAGES_USER')
-                        password = project.hasProperty('GITHUBPACKAGES_PASSWORD') ? project.property('GITHUBPACKAGES_PASSWORD') : System.getenv('GITHUBPACKAGES_PASSWORD')
-                    }
+                scm {
+                    developerConnection = "scm:git:[fetch=]https://github.com/InsanusMokrassar/${project.name}[push=]https://github.com/InsanusMokrassar/${project.name}"
+                    url = "https://github.com/InsanusMokrassar/${project.name}"
+                }
+
+                developers {
+                    
+                        developer {
+                            id = "InsanusMokrassar"
+                            name = "Ovsiannikov Aleksei"
+                            email = "ovsyannikov.alexey95@gmail.com"
+                        }
+                    
+                }
+
+                licenses {
+                    
+                        license {
+                            name = "Apache Software License 2.0"
+                            url = "https://opensource.org/licenses/Apache-2.0"
+                        }
+                    
                 }
             }
-            if ((project.hasProperty('SONATYPE_USER') || System.getenv('SONATYPE_USER') != null) && (project.hasProperty('SONATYPE_PASSWORD') || System.getenv('SONATYPE_PASSWORD') != null)) {
-                maven {
-                    name = "sonatype"
-                    url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                    credentials {
-                        username = project.hasProperty('SONATYPE_USER') ? project.property('SONATYPE_USER') : System.getenv('SONATYPE_USER')
-                        password = project.hasProperty('SONATYPE_PASSWORD') ? project.property('SONATYPE_PASSWORD') : System.getenv('SONATYPE_PASSWORD')
+            repositories {
+                if ((project.hasProperty('GITHUBPACKAGES_USER') || System.getenv('GITHUBPACKAGES_USER') != null) && (project.hasProperty('GITHUBPACKAGES_PASSWORD') || System.getenv('GITHUBPACKAGES_PASSWORD') != null)) {
+                    maven {
+                        name = "GithubPackages"
+                        url = uri("https://maven.pkg.github.com/InsanusMokrassar/ConfigurableInlineTelegramBot")
+                        credentials {
+                            username = project.hasProperty('GITHUBPACKAGES_USER') ? project.property('GITHUBPACKAGES_USER') : System.getenv('GITHUBPACKAGES_USER')
+                            password = project.hasProperty('GITHUBPACKAGES_PASSWORD') ? project.property('GITHUBPACKAGES_PASSWORD') : System.getenv('GITHUBPACKAGES_PASSWORD')
+                        }
+                    }
+                }
+                if ((project.hasProperty('SONATYPE_USER') || System.getenv('SONATYPE_USER') != null) && (project.hasProperty('SONATYPE_PASSWORD') || System.getenv('SONATYPE_PASSWORD') != null)) {
+                    maven {
+                        name = "sonatype"
+                        url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                        credentials {
+                            username = project.hasProperty('SONATYPE_USER') ? project.property('SONATYPE_USER') : System.getenv('SONATYPE_USER')
+                            password = project.hasProperty('SONATYPE_PASSWORD') ? project.property('SONATYPE_PASSWORD') : System.getenv('SONATYPE_PASSWORD')
+                        }
                     }
                 }
             }
@@ -63,7 +74,18 @@ publishing {
     }
 }
 
-signing {
-    useGpgCmd()
-    sign publishing.publications
+if (project.hasProperty("signing.gnupg.keyName")) {
+    apply plugin: 'signing'
+    
+    signing {
+        useGpgCmd()
+    
+        sign publishing.publications
+    }
+    
+    task signAll {
+        tasks.withType(Sign).forEach {
+            dependsOn(it)
+        }
+    }
 }

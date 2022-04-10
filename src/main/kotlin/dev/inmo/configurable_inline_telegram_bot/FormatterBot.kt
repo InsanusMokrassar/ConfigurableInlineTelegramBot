@@ -54,8 +54,8 @@ data class FormatterBot(
         val bot = botConfig.createBot()
         val filter = FlowsUpdatesFilter()
         bot.buildBehaviour(
+            filter,
             scope,
-            filter
         ) {
             enableFormatterBot(templates, restrictions)
         }

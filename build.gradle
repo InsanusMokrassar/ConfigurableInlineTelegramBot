@@ -3,7 +3,6 @@ project.group = "com.insanusmokrassar"
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
     }
 
@@ -28,14 +27,13 @@ project.group = "$library_group"
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
     maven { url "https://kotlin.bintray.com/kotlinx" }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    
+
     implementation "dev.inmo:tgbotapi:$telegram_bot_api_version"
 
     api "io.ktor:ktor-client-core:$ktor_version"
@@ -45,5 +43,5 @@ dependencies {
     api "io.ktor:ktor-server-tomcat:$ktor_version"
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
 }
