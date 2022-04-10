@@ -1,7 +1,7 @@
 package dev.inmo.configurable_inline_telegram_bot.config
 
 import dev.inmo.tgbotapi.types.*
-import dev.inmo.tgbotapi.types.InlineQueries.abstracts.InlineQuery
+import dev.inmo.tgbotapi.types.InlineQueries.query.InlineQuery
 import kotlinx.serialization.Serializable
 
 @Serializable

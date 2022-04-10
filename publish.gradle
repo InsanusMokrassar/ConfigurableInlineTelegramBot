@@ -1,75 +1,91 @@
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
-task javadocsJar(type: Jar) {
+task javadocJar(type: Jar) {
+    from javadoc
     classifier = 'javadoc'
 }
-task sourceJar (type : Jar) {
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
     classifier = 'sources'
 }
 
-afterEvaluate {
-    project.publishing.publications.all {
-        // rename artifacts
-        groupId "${project.group}"
-        if (it.name.contains('kotlinMultiplatform')) {
-            artifactId = "${project.name}"
-            artifact sourceJar
-        } else {
-            artifactId = "${project.name}-$name"
-        }
-    }
-}
-
 publishing {
-    publications.all {
-        artifact javadocsJar
+    publications {
+        maven(MavenPublication) {
+            from components.java
 
-        pom {
-            description = "This library is fully ready to launch bot for working with presets of inline answers in Telegram via Bot API"
-            name = "${project.name}"
-            url = "https://insanusmokrassar.github.io/${project.name}"
+            artifact javadocJar
+            artifact sourcesJar
 
-            scm {
-                developerConnection = "scm:git:[fetch=]https://github.com/InsanusMokrassar/${project.name}[push=]https://github.com/InsanusMokrassar/${project.name}"
-                url = "https://github.com/InsanusMokrassar/${project.name}"
+            pom {
+                resolveStrategy = Closure.DELEGATE_FIRST
+
+                description = "This library is fully ready to launch bot for working with presets of inline answers in Telegram via Bot API"
+                name = "${project.name}"
+                url = "https://insanusmokrassar.github.io/${project.name}"
+
+                scm {
+                    developerConnection = "scm:git:[fetch=]https://github.com/InsanusMokrassar/${project.name}[push=]https://github.com/InsanusMokrassar/${project.name}"
+                    url = "https://github.com/InsanusMokrassar/${project.name}"
+                }
+
+                developers {
+                    
+                        developer {
+                            id = "InsanusMokrassar"
+                            name = "Ovsiannikov Aleksei"
+                            email = "ovsyannikov.alexey95@gmail.com"
+                        }
+                    
+                }
+
+                licenses {
+                    
+                        license {
+                            name = "Apache Software License 2.0"
+                            url = "https://opensource.org/licenses/Apache-2.0"
+                        }
+                    
+                }
             }
-
-            developers {
-                
-                    developer {
-                        id = "InsanusMokrassar"
-                        name = "Ovsiannikov Aleksei"
-                        email = "ovsyannikov.alexey95@gmail.com"
+            repositories {
+                if ((project.hasProperty('GITHUBPACKAGES_USER') || System.getenv('GITHUBPACKAGES_USER') != null) && (project.hasProperty('GITHUBPACKAGES_PASSWORD') || System.getenv('GITHUBPACKAGES_PASSWORD') != null)) {
+                    maven {
+                        name = "GithubPackages"
+                        url = uri("https://maven.pkg.github.com/InsanusMokrassar/ConfigurableInlineTelegramBot")
+                        credentials {
+                            username = project.hasProperty('GITHUBPACKAGES_USER') ? project.property('GITHUBPACKAGES_USER') : System.getenv('GITHUBPACKAGES_USER')
+                            password = project.hasProperty('GITHUBPACKAGES_PASSWORD') ? project.property('GITHUBPACKAGES_PASSWORD') : System.getenv('GITHUBPACKAGES_PASSWORD')
+                        }
                     }
-                
-            }
-
-            licenses {
-                
-                    license {
-                        name = "Apache Software License 2.0"
-                        url = "https://opensource.org/licenses/Apache-2.0"
+                }
+                if ((project.hasProperty('SONATYPE_USER') || System.getenv('SONATYPE_USER') != null) && (project.hasProperty('SONATYPE_PASSWORD') || System.getenv('SONATYPE_PASSWORD') != null)) {
+                    maven {
+                        name = "sonatype"
+                        url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                        credentials {
+                            username = project.hasProperty('SONATYPE_USER') ? project.property('SONATYPE_USER') : System.getenv('SONATYPE_USER')
+                            password = project.hasProperty('SONATYPE_PASSWORD') ? project.property('SONATYPE_PASSWORD') : System.getenv('SONATYPE_PASSWORD')
+                        }
                     }
-                
-            }
-        }
-        
-        repositories {
-            maven {
-                name = "bintray"
-                url = uri("https://api.bintray.com/maven/${project.hasProperty('BINTRAY_USER') ? project.property('BINTRAY_USER') : System.getenv('BINTRAY_USER')}/insanusmokrassar/${project.name}/;publish=1;override=1")
-                credentials {
-                    username = project.hasProperty('BINTRAY_USER') ? project.property('BINTRAY_USER') : System.getenv('BINTRAY_USER')
-                    password = project.hasProperty('BINTRAY_KEY') ? project.property('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
                 }
             }
         }
-        
     }
 }
 
-signing {
-    useGpgCmd()
-    publishing.publications.forEach { sign it }
+if (project.hasProperty("signing.gnupg.keyName")) {
+    apply plugin: 'signing'
+    
+    signing {
+        useGpgCmd()
+    
+        sign publishing.publications
+    }
+    
+    task signAll {
+        tasks.withType(Sign).forEach {
+            dependsOn(it)
+        }
+    }
 }
